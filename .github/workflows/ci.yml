@@ -34,5 +34,9 @@ jobs:
       - name: Verify installation
         run: python encoder/encoder.py --help
 
+      - name: Install iconv support (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libc-bin
+
       - name: Run tests
         run: PYTHONPATH=. pytest
