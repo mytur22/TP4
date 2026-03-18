@@ -15,11 +15,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
-        python-version: [ '3.10' ]
+        python-version: [ '3.11', '3.14' ]
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
@@ -29,14 +28,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest
+          pip install -e ".[dev]"
 
       - name: Verify installation
-        run: python encoder/encoder.py --help
-
-      - name: Install iconv support (Linux)
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y libc-bin
+        run: encoder --help
 
       - name: Run tests
-        run: PYTHONPATH=. pytest
+        run: pytest
